@@ -139,6 +139,7 @@ describe('Producto.Service', () => {
                 imagen_1: 'asdads.jpg',
                 imagen_2: 'asdsadss.jpg',
             });
+ 
         });
     });
 
