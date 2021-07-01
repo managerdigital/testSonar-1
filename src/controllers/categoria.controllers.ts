@@ -31,7 +31,7 @@ export class categoriaController extends BaseController{
                 } = req.body;
     
                 const categoria = await this.categoriaService.store({
-                    nombre,
+                    nombre: nombre.toLowerCase(),
                     descripcion,
                     slug,
                     icono
@@ -69,7 +69,7 @@ export class categoriaController extends BaseController{
                 const id = parseInt(req.params.id);
     
                 await this.categoriaService.update({
-                    nombre,
+                    nombre: nombre.toLowerCase(),
                     descripcion,
                     slug,
                     icono
@@ -94,6 +94,25 @@ export class categoriaController extends BaseController{
         try{
             const id = parseInt(req.params.id);
             const categoria = await this.categoriaService.findById(id);
+            
+            res.status(200).json({
+                ok: true,
+                categoria
+            });
+
+        }catch(error) {
+            this.handleException(error, res);
+        }
+    }
+
+
+    @route('/findByName/:name')
+    @GET()
+    public async finByName(req: Request, res: Response): Promise<void>{
+
+        try{
+            const name = req.params.name;
+            const categoria = await this.categoriaService.findByName(name.toLocaleLowerCase());
             
             res.status(200).json({
                 ok: true,

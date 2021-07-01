@@ -28,6 +28,7 @@ export class productoController extends BaseController{
                 categorias_id, 
                 plazas_id, 
                 descripcion, 
+                unidad,
                 sku,
                 imagen_principal,
                 imagen_1,
@@ -36,10 +37,11 @@ export class productoController extends BaseController{
 
             try{
                 const producto = await this.productoService.store({
-                    nombre,
+                    nombre: nombre.toLowerCase(),
                     categorias_id,
                     plazas_id,
                     descripcion,
+                    unidad: unidad.toLowerCase(),
                     sku,
                     imagen_principal,
                     imagen_1,
@@ -71,6 +73,7 @@ export class productoController extends BaseController{
                 categorias_id, 
                 plazas_id, 
                 descripcion, 
+                unidad,
                 sku,
                 imagen_principal,
                 imagen_1,
@@ -79,10 +82,11 @@ export class productoController extends BaseController{
     
             try {
                 await this.productoService.update(id, {
-                    nombre,
+                    nombre: nombre.toLowerCase(),
                     categorias_id,
                     plazas_id,
                     descripcion,
+                    unidad: unidad.toLowerCase(),
                     sku,
                     imagen_principal,
                     imagen_1,
@@ -134,6 +138,25 @@ export class productoController extends BaseController{
         
         try{
             const producto = await this.productoService.findById(id);
+
+            res.status(200).json({
+                ok: true,
+                producto
+            });                
+
+        } catch(error) {
+            this.handleException(error, res);
+        }
+    }
+
+
+    @route('/findByNameAndUnit')
+    @POST()
+    public async findByNameAndUnit(req: Request, res: Response): Promise<void>{
+        const {name, unit} = req.body;   
+        
+        try{
+            const producto = await this.productoService.findByNameAndUnit(name.toLowerCase(), unit.toLowerCase());
 
             res.status(200).json({
                 ok: true,

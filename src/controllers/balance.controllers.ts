@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
-import { GET, PUT, POST, route } from "awilix-express";
+import { GET, POST, route } from "awilix-express";
 
 import { BaseController } from "../common/controllers/base.controller";
 
 import { BalanceService } from '../services/balance.service';
 
 import { Balance } from '../services/repositories/domain/balance.domain';
-import { BalanceCreateDto, BalanceUpdateDto } from '../dtos/balance.dto';
+import { BalanceCreateDto } from '../dtos/balance.dto';
 
 
 @route('/balances')

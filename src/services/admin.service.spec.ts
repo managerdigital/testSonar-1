@@ -13,7 +13,7 @@ describe('Admin.Service', () => {
 
     describe('Store', () => {
         it('should return the new admin', async () => {
-            return await adminService.store({
+            await adminService.store({
                 email: 'test@test.com',
                 password: '123456',
                 nombre: 'Daniel',
@@ -25,7 +25,7 @@ describe('Admin.Service', () => {
         });
         it('tries to register an admin without a password', async () => {
             try {
-                return await adminService.store({
+                await adminService.store({
                     email: 'test@test.com',
                     // password: '123',
                     nombre: 'Daniel',
@@ -34,13 +34,14 @@ describe('Admin.Service', () => {
                     cedula: 12312,
                     rol: 'SUPER_ADMIN'
                 } as AdminCreateDto);
-            } catch(error: any) {
-                assert.strictEqual(error.message, 'El password es necesario');
+            } catch(error) {
+                const { message } = error as {message: string};
+                assert.strictEqual(message, 'El password es necesario');
             }
         });
         it('tries to register a too short password', async () => {
             try {
-                return await adminService.store({
+                await adminService.store({
                     email: 'test2@test.com',
                     password: '123',
                     nombre: 'Daniel',
@@ -49,8 +50,9 @@ describe('Admin.Service', () => {
                     cedula: 12312,
                     rol: 'SUPER_ADMIN'
                 } as AdminCreateDto);
-            } catch(error: any) {
-                assert.strictEqual(error.message, 'La contraseña es muy corta');
+            } catch(error) {
+                const { message } = error as {message: string};
+                assert.strictEqual(message, 'La contraseña es muy corta');
             }
         });
         it('tries to register a registered email', async () => {
@@ -64,8 +66,9 @@ describe('Admin.Service', () => {
                     cedula: 12312,
                     rol: 'SUPER_ADMIN'
                 } as AdminCreateDto);
-            } catch(error: any){
-                assert.strictEqual(error.message, 'Ya existe ese correo en el sistema');
+            } catch(error) {
+                const { message } = error as {message: string};
+                assert.strictEqual(message, 'Ya existe ese correo en el sistema');
             }
         });
         it('tries to register this < in password', async () => {
@@ -79,8 +82,9 @@ describe('Admin.Service', () => {
                     cedula: 12312,
                     rol: 'SUPER_ADMIN'
                 } as AdminCreateDto);
-            } catch(error: any){
-                assert.strictEqual(error.message, 'Ya existe ese correo en el sistema');
+            } catch(error) {
+                const { message } = error as {message: string};
+                assert.strictEqual(message, 'Ya existe ese correo en el sistema');
             }
         });
         it('tries to register this > in password', async () => {
@@ -94,8 +98,9 @@ describe('Admin.Service', () => {
                     cedula: 12312,
                     rol: 'SUPER_ADMIN'
                 } as AdminCreateDto);
-            } catch(error: any){
-                assert.strictEqual(error.message, 'Ya existe ese correo en el sistema');
+            } catch(error) {
+                const { message } = error as {message: string};
+                assert.strictEqual(message, 'Ya existe ese correo en el sistema');
             }
         });
         it('tries to register doble quotes in password', async () => {
@@ -109,8 +114,9 @@ describe('Admin.Service', () => {
                     cedula: 12312,
                     rol: 'SUPER_ADMIN'
                 } as AdminCreateDto);
-            } catch(error: any){
-                assert.strictEqual(error.message, 'Ya existe ese correo en el sistema');
+            } catch(error) {
+                const { message } = error as {message: string};
+                assert.strictEqual(message, 'Ya existe ese correo en el sistema');
             }
         });
     });
@@ -118,7 +124,7 @@ describe('Admin.Service', () => {
     describe('Update', () => {
         it('tries to find an unexisting admin ', async () => {
             try{
-                return await adminService.update(20, {
+                await adminService.update(20, {
                     email: 'test@test.com',
                     password: '123',
                     nombre: 'Daniel',
@@ -127,8 +133,9 @@ describe('Admin.Service', () => {
                     cedula: 12312,
                     rol: 'SUPER_ADMIN'
                 } as AdminUpdateDto);
-            } catch(error: any){
-                assert.strictEqual(error.message, 'Hubo un errorError: Admin no encontrado');
+            } catch(error) {
+                const { message } = error as {message: string};
+                assert.strictEqual(message, 'Hubo un errorError: Admin no encontrado');
             }
         });
         it('should update', async () => {
@@ -148,9 +155,10 @@ describe('Admin.Service', () => {
     describe('Find By Id', () => {
         it('tries to find an unexisting admin ', async () => {
             try{
-                return await adminService.findById(20);
-            } catch(error: any){
-                assert.strictEqual(error.message, 'Hubo un errorError: No existe un admin con ese id');
+                await adminService.findById(20);
+            } catch(error) {
+                const { message } = error as {message: string};
+                assert.strictEqual(message, 'Hubo un errorError: No existe un admin con ese id');
             }
         });
         it('should return the user admin', async () => {
@@ -161,9 +169,10 @@ describe('Admin.Service', () => {
     describe('Find By Cedula', () => {
         it('tries to find an unexisting admin ', async () => {
             try{
-                return await adminService.findByCedula(20);
-            } catch(error: any){
-                assert.strictEqual(error.message, 'Hubo un errorError: No existe un admin con esa cedula');
+                await adminService.findByCedula(20);
+            } catch(error) {
+                const { message } = error as {message: string};
+                assert.strictEqual(message, 'Hubo un errorError: No existe un admin con esa cedula');
             }
         });
         it('should return the user admin', async () => {
@@ -175,16 +184,18 @@ describe('Admin.Service', () => {
         it('tries to change the password without email, oldPassword or newPassword', async () => {
             try{
                 return await adminService.changePassword(20, '', '', '');
-            } catch(error: any){
-                assert.strictEqual(error.message, 'El email, la contraseña antigua y la nueva son requeridos');
+            } catch(error) {
+                const { message } = error as {message: string};
+                assert.strictEqual(message, 'El email, la contraseña antigua y la nueva son requeridos');
             }
         });
 
         it('tries to change the password but the email does not exists', async () => {
             try{
                 return await adminService.changePassword(20, 'test01@gmail.com', '123456', '456321');
-            } catch(error: any){
-                assert.strictEqual(error.message, 'Hubo un errorError: No existe');
+            } catch(error) {
+                const { message } = error as {message: string};
+                assert.strictEqual(message, 'Hubo un errorError: No existe');
             }
         });
 

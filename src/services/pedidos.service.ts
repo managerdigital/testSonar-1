@@ -1,6 +1,7 @@
 import { ApplicationException } from '../common/exceptions/application.exception';
 
 import { PedidoCreateDto, PedidoUpdateDto } from '../dtos/pedidos.dtos';
+import { VentasProductosLocatariosCreateDto } from '../dtos/ventasProductosLocatarios.dto';
 import { BalanceCreateDto } from '../dtos/balance.dto';
 
 import { Pedido } from './repositories/domain/pedidos.domain';
@@ -14,6 +15,7 @@ import { ClientePGRepository } from './repositories/implementation/pg/clientes.i
 import { LocatarioPGRepository } from './repositories/implementation/pg/locatario.imp';
 import { ProductosLocatariosPGRepository } from './repositories/implementation/pg/productosLocatarios.imp';
 import { BalancePGRepository } from './repositories/implementation/pg/balance.imp';
+import { VentasProductosLocatariosPGRepository } from './repositories/implementation/pg/ventasProductosLocatarios.imp';
 
 import { transporter } from '../common/mailer/mailer';
 
@@ -25,7 +27,8 @@ export class PedidoService {
                 private readonly clienteRepository: ClientePGRepository,
                 private readonly locatarioRepository: LocatarioPGRepository,
                 private readonly productosLocatariosRepository: ProductosLocatariosPGRepository,
-                private readonly balanceRepository: BalancePGRepository) {}
+                private readonly balanceRepository: BalancePGRepository,
+                private readonly ventasProductosLocatariosRepository: VentasProductosLocatariosPGRepository) {}
             
 
 
@@ -106,7 +109,7 @@ export class PedidoService {
         originalEntry.pagado = entry.pagado || originalEntry.pagado;
         originalEntry.estado = entry.estado || originalEntry.estado;
         
-        // ESTADO = entragado(2) ENTONCES PAGADO = TRUE
+        // Note: ESTADO = entragado(2) ENTONCES PAGADO = TRUE
         if (originalEntry.estado === PedidosEstados.entregado) {
             const balance = await this.balanceRepository.store({
                 total: entry.total || originalEntry.total,
@@ -115,6 +118,15 @@ export class PedidoService {
                 cliente_id: entry.cliente_id || originalEntry.cliente_id
             } as BalanceCreateDto);
             if(!balance) throw new ApplicationException("Hubo un error");
+            
+            const productosLocatarios = originalEntry.productos_locatarios_id || entry.productos_locatarios_id;
+
+            for(const producto of productosLocatarios) {
+                await this.ventasProductosLocatariosRepository.store({
+                    plaza_id: entry.plaza_id || originalEntry.plaza_id,
+                    producto_locatario_id: producto
+                } as VentasProductosLocatariosCreateDto);
+            }
         }
 
         const pedido = await this.pedidoRepository.update(originalEntry.id, originalEntry);
@@ -124,8 +136,17 @@ export class PedidoService {
 
 
     public async pagadoYEntregado(id: number): Promise<void>{
-        const existePedido = await this.pedidoRepository.findById(id);
-        if(!existePedido) throw new ApplicationException("No existe un pedido con ese id");
+        const entry = await this.pedidoRepository.findById(id);
+        if(!entry) throw new ApplicationException("No existe un pedido con ese id");
+        
+        const balance = await this.balanceRepository.store({
+            total: entry.total,
+            plaza_id: entry.plaza_id,
+            locatorio_id: entry.locatorios_id,
+            cliente_id: entry.cliente_id
+        } as BalanceCreateDto);
+        if(!balance) throw new ApplicationException("Hubo un error");
+       
         return await this.pedidoRepository.pagadoYEntregado(id);
     }
 
@@ -137,7 +158,7 @@ export class PedidoService {
     }
 
 
-    public async getAll(): Promise<Pedido[] | null>{
+    public async getAll(): Promise<[] | null>{
         const pedidos = await this.pedidoRepository.getAll();
         if(!pedidos) throw new ApplicationException("No hay pedidos registrados");
 
@@ -154,11 +175,11 @@ export class PedidoService {
                 }
             });
         }
-        return pedidosReturn as Pedido[];
+        return pedidosReturn as [];
     }
 
 
-    public async pedidosPorLocatario(locatarioId: number): Promise<Pedido[]>{
+    public async pedidosPorLocatario(locatarioId: number): Promise<[]>{
         const existeLocatario = await this.locatarioRepository.findById(locatarioId);
         if(!existeLocatario) throw new ApplicationException("No existe ese locatario");
 
@@ -178,7 +199,7 @@ export class PedidoService {
                 }
             });
         }
-        return pedidosReturn as Pedido[];
+        return pedidosReturn as [];
     }
 
 

@@ -40,8 +40,8 @@ export class ProductoService{
 
     async store(entry: ProductoCreateDto): Promise<Productos | null> {
         if(!entry.nombre) throw new ApplicationException("El nombre debe estar");
-        const productoExiste = await this.productoRepository.findByName(entry.nombre);
-        if(productoExiste) throw new ApplicationException("Ya existe producto con ese nombre");
+        // const productoExiste = await this.productoRepository.findByName(entry.nombre);
+        // if(productoExiste) throw new ApplicationException("Ya existe producto con ese nombre");
         
         if(entry.categorias_id) {
             const existenCategorias = await this.buscarCategoriasSiExisten(entry.categorias_id) as boolean;
@@ -52,6 +52,7 @@ export class ProductoService{
             const existenPLazas = await this.buscarPlazaSiExisten(entry.plazas_id) as boolean;
             if(!existenPLazas) throw new ApplicationException("No existe una de las plazas");
         }
+        if(entry.unidad) entry.unidad = entry.unidad.toLocaleLowerCase();
         const producto = await this.productoRepository.store(entry);
         if(!producto) throw new ApplicationException("Hubo un error");
         return producto;
@@ -73,11 +74,13 @@ export class ProductoService{
             const existenPLazas = await this.buscarPlazaSiExisten(entry.plazas_id);
             if(!existenPLazas) throw new ApplicationException("No existe una de las plazas");
         }
-
+        if(entry.unidad) entry.unidad = entry.unidad.toLocaleLowerCase();
+        
         originalEntry.nombre = entry.nombre || originalEntry.nombre;
         originalEntry.categorias_id = entry.categorias_id || originalEntry.categorias_id;
         originalEntry.plazas_id = entry.plazas_id || originalEntry.plazas_id;
         originalEntry.descripcion = entry.descripcion || originalEntry.descripcion;
+        originalEntry.unidad = entry.unidad|| originalEntry.unidad;
         originalEntry.sku = entry.sku || originalEntry.sku;
         originalEntry.imagen_principal = entry.imagen_principal || originalEntry.imagen_principal;
         originalEntry.imagen_1 = entry.imagen_1 || originalEntry.imagen_1;
@@ -96,6 +99,13 @@ export class ProductoService{
 
     async findById(id: number): Promise<Productos> {
         const producto = await this.productoRepository.findById(id);
+        if(!producto) throw new ApplicationException("No existe ese producto");
+        return producto;
+    }
+
+
+    async findByNameAndUnit(name: string, unit: string): Promise<Productos> {
+        const producto = await this.productoRepository.findByNameAndUnit(name, unit)
         if(!producto) throw new ApplicationException("No existe ese producto");
         return producto;
     }

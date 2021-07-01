@@ -13,7 +13,7 @@ export class PromocionesPGRepository implements PromocionesRepository {
         const now = new Date();
   
         const res = await pool.query(
-             "INSERT INTO promociones(producto_id, plazas_id, categorias_id, imagen, created_at, updated_at) VALUES($1, $2, $3, $4, $5, $6)  RETURNING id",
+             "INSERT INTO promociones(producto_id, plazas_id, categorias_id, imagen, created_at, updated_at) VALUES($1, $2, $3, $4, $5, $6) RETURNING id",
              [
                 entry.producto_id,
                 entry.plazas_id, 
@@ -75,7 +75,7 @@ export class PromocionesPGRepository implements PromocionesRepository {
     }
     
     async getAll(): Promise<Promociones[] | null> {
-        const response: QueryResult = await pool.query("SELECT * FROM promociones ORDER BY id DESC");
+        const response: QueryResult = await pool.query("SELECT * FROM promociones");
 
         if (response.rows.length) return response.rows as Promociones[];
         return null;

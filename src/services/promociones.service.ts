@@ -21,9 +21,9 @@ export class PromocionService{
 
     private async verificaIds(entry: PromocionesCreateDto | PromocionesUpdateDto): Promise<void>{
         if(entry.producto_id){
-            for(const key in entry.categorias_id){
+            for(const key in entry.producto_id){
                 const existeProducto = await this.productoRepository.findById(entry.producto_id[key]);
-                if(!existeProducto) throw new ApplicationException("No encontrada esa localidad");  
+                if(!existeProducto) throw new ApplicationException("No encontrada una de los productos");  
             }    
         }
         

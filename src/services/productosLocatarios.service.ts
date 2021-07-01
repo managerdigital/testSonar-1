@@ -45,8 +45,6 @@ export class ProductosLocatariosService{
  
         originalEntry.producto_id = entry.producto_id || originalEntry.producto_id;
         originalEntry.locatario_id = entry.locatario_id || originalEntry.locatario_id;
-        originalEntry.unidad = entry.unidad || originalEntry.unidad;
-        originalEntry.cantidad_unidad = entry.cantidad_unidad || originalEntry.cantidad_unidad;
         originalEntry.precio = entry.precio || originalEntry.precio;
 
         originalEntry.precio_rebajado = entry.precio_rebajado || 0;

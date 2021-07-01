@@ -14,7 +14,7 @@ dotenv.config({
 console.log('NODE_ENV: ', process.env.NODE_ENV);
 console.log('APP_ENV: ', process.env.APP_ENV);
 // ====================================================================================================
-
+import * as functions from "firebase-functions";
 import express = require('express');
 import cors = require('cors');
 
@@ -48,13 +48,6 @@ app.use(expressFileUpload());
 loadContainer(app);
 
 
-// Uploads controllers
-// app.use(loadControllers(
-//     'controllers/uimagenReturn.controlers.ts',
-//     {cwd: __dirname}
-// ));
-
-
 // JWT
 // Se adjunta una propiedad en cada Request user req.user
 // bearer token 
@@ -72,7 +65,6 @@ if(process.env.jwt_secret_key) {
             '/locatarios/descargaPlantilla', 
             '/clientes/downladXLSX', 
             '/pedidos/downladXLSX',
-            // '/admins/renewToken'
         ]
     }));
 }
@@ -80,9 +72,10 @@ if(process.env.jwt_secret_key) {
 
 // Controllers
 app.use(loadControllers(
-    'controllers/*.ts',
+    'controllers/*.js',
     {cwd: __dirname}
 ));
 
+export const dash = functions.https.onRequest( app ); 
 
-export { app };
+// export { app };

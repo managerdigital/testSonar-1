@@ -15,14 +15,12 @@ export class ProductosLocatariosPGRepository implements ProductosLocatariosRepos
         const now = new Date();
 
         const res = await pool.query(
-             "INSERT INTO productos_locatarios(producto_id, locatario_id, stock, en_promocion, unidad, cantidad_unidad, precio, precio_rebajado, descripcion, sku, created_at, updated_at) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)  RETURNING id",
+             "INSERT INTO productos_locatarios(producto_id, locatario_id, stock, en_promocion, precio, precio_rebajado, descripcion, sku, created_at, updated_at) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)  RETURNING id",
              [
                 entry.producto_id,
                 entry.locatario_id, 
                 entry.stock,
                 entry.en_promocion, 
-                entry.unidad, 
-                entry.cantidad_unidad,
                 entry.precio,
                 entry.precio_rebajado,
                 entry.descripcion, 
@@ -42,12 +40,10 @@ export class ProductosLocatariosPGRepository implements ProductosLocatariosRepos
         const now = new Date();
 
         await pool.query(
-            "UPDATE productos_locatarios SET producto_id = $1, stock = $2, en_promocion = $3, unidad = $4, cantidad_unidad = $5, precio = $6, precio_rebajado = $7, descripcion = $8, sku =$9, locatario_id = $10, updated_at = $11 WHERE id = $12",
+            "UPDATE productos_locatarios SET producto_id = $1, stock = $2, en_promocion = $3, precio = $4, precio_rebajado = $5, descripcion = $6, sku =$7, locatario_id = $8, updated_at = $9 WHERE id = $10",
             [   entry.producto_id, 
                 entry.stock,
                 entry.en_promocion, 
-                entry.unidad, 
-                entry.cantidad_unidad,
                 entry.precio,
                 entry.precio_rebajado,
                 entry.descripcion, 

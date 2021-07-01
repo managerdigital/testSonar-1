@@ -30,6 +30,7 @@ import { PedidoPGRepository } from './services/repositories/implementation/pg/pe
 import { BalancePGRepository } from './services/repositories/implementation/pg/balance.imp';
 import { CalificacionPGRepository } from './services/repositories/implementation/pg/calificaciones.imp';
 import { PromocionesPGRepository } from './services/repositories/implementation/pg/promociones.imp';
+import { VentasProductosLocatariosPGRepository } from './services/repositories/implementation/pg/ventasProductosLocatarios.imp';
 
 
 
@@ -54,6 +55,7 @@ export default (app: express.Application): void => {
         balanceRepository: asClass(BalancePGRepository).scoped(),
         calificacionRepository: asClass(CalificacionPGRepository).scoped(),
         promocionesRepository: asClass(PromocionesPGRepository).scoped(),
+        ventasProductosLocatariosRepository: asClass(VentasProductosLocatariosPGRepository).scoped(),
         
         // Services
         adminService: asClass(AdminService).scoped(),

@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { GET, PUT, POST, route } from "awilix-express";
-import path = require('path');
 
 import { BaseController } from '../common/controllers/base.controller';
 import { PedidoService } from '../services/pedidos.service';

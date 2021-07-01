@@ -18,6 +18,8 @@ export class ProductosMockRepository implements ProductoRepository {
             categorias_id: entry.categorias_id,
             plazas_id: entry.plazas_id,
             nombre: entry.nombre,
+            descripcion: entry.descripcion,
+            unidad: entry.unidad,
             sku: entry.sku,
             imagen_principal: entry.imagen_principal,
             imagen_1: entry.imagen_1,
@@ -46,6 +48,7 @@ export class ProductosMockRepository implements ProductoRepository {
             originalEntry.plazas_id = entry.plazas_id || originalEntry.plazas_id;
             originalEntry.nombre = entry.nombre || originalEntry.nombre;
             originalEntry.descripcion = entry.descripcion || originalEntry.descripcion;
+            originalEntry.unidad = entry.unidad || originalEntry.unidad;
             originalEntry.sku = entry.sku || originalEntry.sku;
             originalEntry.imagen_principal = entry.imagen_principal || originalEntry.imagen_principal;
             originalEntry.imagen_1 = entry.imagen_1 || originalEntry.imagen_1;

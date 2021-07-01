@@ -21,8 +21,9 @@ export class locatarioController extends BaseController{
     public async store(req: Request, res: Response): Promise<void>{
 
         const user = req.user as {id: number, rol: string};
-
-        if(user.rol === 'SUPER_ADMIN') {
+        const rolAllow = ['SUPER_ADMIN', 'ADMIN_LOCATARIO'];
+        
+        if(rolAllow.includes(user.rol)) {
             const { 
                 admin_id, 
                 plaza_id, 
@@ -80,7 +81,9 @@ export class locatarioController extends BaseController{
 
         const user = req.user as {id: number, rol: string};
 
-        if(user.rol === 'SUPER_ADMIN' || user.rol === 'LOCATARIO') {      
+        const rolAllow = ['SUPER_ADMIN', 'ADMIN_LOCATARIO'];
+        
+        if(rolAllow.includes(user.rol)) {
             const id = parseInt(req.params.id);  
             // const user = req.user as {id: number, rol: string};
             const { 
@@ -138,7 +141,9 @@ export class locatarioController extends BaseController{
 
         const user = req.user as {id: number, rol: string};
 
-        if(user.rol === 'SUPER_ADMIN') {
+        const rolAllow = ['SUPER_ADMIN', 'ADMIN_LOCATARIO'];
+        
+        if(rolAllow.includes(user.rol)) {
             const id = parseInt(req.params.id);  
     
             try {
@@ -199,15 +204,15 @@ export class locatarioController extends BaseController{
             this.handleException(error, res);
         }
     }
+    
 
-
-    @route('/findByNumeroDeLocalYPlazaId')
+    @route('/findByNumeroDeLocalYPlazaId/:numeroLocal/:plazaId')
     @GET()
     public async findByNumeroDeLocalYPlazaId(req: Request, res: Response): Promise<void>{
-        // const plazaId = parseInt(req.params.plazaId);  
-        // const numeroLocal = parseInt(req.params.nLocal);  
 
-        const { plazaId, numeroLocal } = req.body;
+        // const { plazaId, numeroLocal } = req.body;
+        const numeroLocal = parseInt(req.params.numeroLocal);  
+        const plazaId = parseInt(req.params.plazaId);  
 
         try{
             const locatario = await this.locatarioService.findByNumeroDeLocalYPlazaId(numeroLocal, plazaId);
@@ -249,7 +254,6 @@ export class locatarioController extends BaseController{
     @GET()
     public async getTotalLocatariosDePlaza(req: Request, res: Response): Promise<void>{
         try{
-            // const id = parseInt(req.params.id);  
             const cantidadLocales = await this.locatarioService.getTotalLocatariosDePlaza();
 
             res.status(200).json({

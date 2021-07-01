@@ -23,8 +23,6 @@ export class ProductosLocatariosMockRepository implements ProductosLocatariosRep
             locatario_id: entry.locatario_id,
             stock: entry.stock,
             en_promocion: entry.en_promocion,
-            unidad: entry.unidad,
-            cantidad_unidad: entry.cantidad_unidad,
             precio: entry.precio,
             precio_rebajado: entry.precio_rebajado,
             descripcion: entry.descripcion,
@@ -53,8 +51,6 @@ export class ProductosLocatariosMockRepository implements ProductosLocatariosRep
             originalEntry.locatario_id = entry.locatario_id || originalEntry.locatario_id;
             originalEntry.stock = entry.stock;
             originalEntry.en_promocion = entry.en_promocion || originalEntry.en_promocion;
-            originalEntry.unidad = entry.unidad || originalEntry.unidad;
-            originalEntry.cantidad_unidad = entry.cantidad_unidad || originalEntry.cantidad_unidad;
             originalEntry.precio = entry.precio || originalEntry.precio;
             originalEntry.precio_rebajado = entry.precio_rebajado || originalEntry.precio_rebajado;
             originalEntry.descripcion = entry.descripcion || originalEntry.descripcion;
