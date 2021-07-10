@@ -37,11 +37,11 @@ export class productoController extends BaseController{
 
             try{
                 const producto = await this.productoService.store({
-                    nombre: nombre.toLowerCase(),
+                    nombre: nombre.toUpperCase(),
                     categorias_id,
                     plazas_id,
                     descripcion,
-                    unidad: unidad.toLowerCase(),
+                    unidad: unidad,
                     sku,
                     imagen_principal,
                     imagen_1,
@@ -79,14 +79,14 @@ export class productoController extends BaseController{
                 imagen_1,
                 imagen_2
             } = req.body;
-    
+
             try {
                 await this.productoService.update(id, {
-                    nombre: nombre.toLowerCase(),
+                    nombre,
                     categorias_id,
                     plazas_id,
                     descripcion,
-                    unidad: unidad.toLowerCase(),
+                    unidad,
                     sku,
                     imagen_principal,
                     imagen_1,
@@ -156,7 +156,7 @@ export class productoController extends BaseController{
         const {name, unit} = req.body;   
         
         try{
-            const producto = await this.productoService.findByNameAndUnit(name.toLowerCase(), unit.toLowerCase());
+            const producto = await this.productoService.findByNameAndUnit(name.toUpperCase(), unit);
 
             res.status(200).json({
                 ok: true,

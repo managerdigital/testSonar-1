@@ -14,7 +14,7 @@ dotenv.config({
 console.log('NODE_ENV: ', process.env.NODE_ENV);
 console.log('APP_ENV: ', process.env.APP_ENV);
 // ====================================================================================================
-import * as functions from "firebase-functions";
+// import * as functions from "firebase-functions";
 import express = require('express');
 import cors = require('cors');
 
@@ -76,6 +76,6 @@ app.use(loadControllers(
     {cwd: __dirname}
 ));
 
-export const dash = functions.https.onRequest( app ); 
+// export const dashtest = functions.https.onRequest( app ); 
 
-// export { app };
+export { app };

@@ -11,6 +11,5 @@ export interface PlazaRepository {
     findByName(nombre: string): Promise<Plaza | null>;
     findByEmail(email: string): Promise<Plaza | null>;
     findById(id: number): Promise<Plaza | null>;
-
-
+    // findPlazaByCategoriaId(categoriaId: number): Promise<Plaza | null> 
 }

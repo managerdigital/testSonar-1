@@ -119,6 +119,15 @@ export class PlazaService{
         return plaza;
     }
 
+    public async findPlazasByCategoriaId(categoriaId: number): Promise<Plaza[]>{
+        const categoria = await this.categoriaRepository.findById(categoriaId);
+        if(!categoria) throw new ApplicationException("No existe esa categoria");
+
+        const plaza = await this.plazaRepository.findPlazasByCategoriaId(categoriaId);
+        if(!plaza) throw new ApplicationException("No hay plaza con esa categoria");
+        return plaza;
+    }
+
 
     public async delete(id: number): Promise<void>{
         const existe = await this.plazaRepository.findById(id);
@@ -127,6 +136,7 @@ export class PlazaService{
     }
 
 
+    
 
 
 

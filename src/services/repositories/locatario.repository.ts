@@ -14,5 +14,4 @@ export interface LocatarioRepository {
     findPorNumeroLocalPlazaId(noLocal: number, plazaId: number): Promise<Locatario | null>;
     getAll(offset: number): Promise<Locatario[] | null>;
     getTotalLocatariosDePlaza():Promise<[] | null>;
-
 }

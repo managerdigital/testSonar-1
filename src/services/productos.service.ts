@@ -74,9 +74,9 @@ export class ProductoService{
             const existenPLazas = await this.buscarPlazaSiExisten(entry.plazas_id);
             if(!existenPLazas) throw new ApplicationException("No existe una de las plazas");
         }
-        if(entry.unidad) entry.unidad = entry.unidad.toLocaleLowerCase();
+        // if(entry.unidad) entry.unidad = entry.unidad.toLocaleLowerCase();
         
-        originalEntry.nombre = entry.nombre || originalEntry.nombre;
+        originalEntry.nombre = entry.nombre.toUpperCase() || originalEntry.nombre;
         originalEntry.categorias_id = entry.categorias_id || originalEntry.categorias_id;
         originalEntry.plazas_id = entry.plazas_id || originalEntry.plazas_id;
         originalEntry.descripcion = entry.descripcion || originalEntry.descripcion;

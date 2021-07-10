@@ -16,6 +16,7 @@ import { PedidoService } from './services/pedidos.service';
 import { BalanceService } from './services/balance.service';
 import { CalificacionService } from './services/calificacion.service';
 import { PromocionService } from './services/promociones.service';
+import { VentasProductosLocatariosService } from './services/ventasProductosLocatarios.service';
 
 
 import { AdminPGRepository } from './services/repositories/implementation/pg/admin.imp';
@@ -70,6 +71,7 @@ export default (app: express.Application): void => {
         balanceService: asClass(BalanceService).scoped(),
         calificacionService: asClass(CalificacionService).scoped(),
         promocionService: asClass(PromocionService).scoped(),
+        ventasProductosLocatariosService: asClass(VentasProductosLocatariosService).scoped(),
         
         testService: asClass(TestService).scoped(),
     });

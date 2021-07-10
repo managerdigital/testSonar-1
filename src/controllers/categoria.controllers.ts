@@ -31,7 +31,7 @@ export class categoriaController extends BaseController{
                 } = req.body;
     
                 const categoria = await this.categoriaService.store({
-                    nombre: nombre.toLowerCase(),
+                    nombre: nombre.toUpperCase(),
                     descripcion,
                     slug,
                     icono
@@ -67,9 +67,10 @@ export class categoriaController extends BaseController{
                 } = req.body;
                 
                 const id = parseInt(req.params.id);
+                if(nombre) nombre.toUpperCase();
     
                 await this.categoriaService.update({
-                    nombre: nombre.toLowerCase(),
+                    nombre,
                     descripcion,
                     slug,
                     icono
@@ -112,7 +113,7 @@ export class categoriaController extends BaseController{
 
         try{
             const name = req.params.name;
-            const categoria = await this.categoriaService.findByName(name.toLocaleLowerCase());
+            const categoria = await this.categoriaService.findByName(name);
             
             res.status(200).json({
                 ok: true,

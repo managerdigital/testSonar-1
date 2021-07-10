@@ -154,6 +154,30 @@ export class plazaController extends BaseController{
     }
 
 
+    @route('/findPlazasByCategoriaId/:categoriaId')
+    @GET()
+    public async findPlazasByCategoriaId(req: Request, res: Response): Promise<void>{
+        const categoriaId = parseInt(req.params.categoriaId);  
+
+        try{
+            const plazas = await this.plazaService.findPlazasByCategoriaId(categoriaId);
+
+            res.status(200).json({
+                ok: true,
+                plazas: plazas.map((plaza: Plaza) => {
+                                            return {
+                                                plazaId: plaza.id,
+                                                nombre: plaza.nombre,
+                                            };
+                                        })
+            });
+
+        } catch(error) {
+            this.handleException(error, res);
+        }
+    }
+
+
 
 
     @route('/update/:id')

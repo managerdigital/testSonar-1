@@ -175,6 +175,17 @@ export class PlazaPGRepository implements PlazaRepository{
         if (response.rows.length) return response.rows[0] as Plaza;
         return null;
     }
+
+    // SELECT * FROM locatarios WHERE '(408)-783-5731' = ANY (numero_local);
+
+    async findPlazasByCategoriaId(categoriaId: number): Promise<Plaza[] | null> {
+        const response: QueryResult = await pool.query(
+            "SELECT * FROM plazas WHERE $1 = ANY (categorias_id)",
+            [categoriaId]
+        );
+        if (response.rows.length) return response.rows as Plaza[];
+        return null;
+    }
     
  
 
