@@ -10,7 +10,7 @@ export class VentasProductosLocatariosPGRepository implements VentasProductosLoc
     
     async store(entry: VentasProductosLocatariosCreateDto): Promise<VentasProductosLocatarios | null> {
         const now = new Date();
-  
+        console.log(entry);
         const res = await pool.query(
              "INSERT INTO ventas_productos_locatarios(plaza_id, producto_locatario_id, created_at, updated_at) VALUES($1, $2, $3, $4) RETURNING id",
              [
@@ -62,5 +62,13 @@ export class VentasProductosLocatariosPGRepository implements VentasProductosLoc
         if (response.rows.length) return response.rows as VentasProductosLocatarios[];
         return null;
     }
+
+    async getMasVendidos(): Promise<[] | null> {
+        const response: QueryResult = await pool.query("SELECT producto_locatario_id, COUNT(producto_locatario_id) FROM ventas_productos_locatarios GROUP BY producto_locatario_id ORDER BY COUNT(producto_locatario_id) DESC");
+
+        if (response.rows.length) return response.rows as [];
+        return null;
+    }
+
 
 }

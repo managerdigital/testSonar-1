@@ -21,10 +21,23 @@ export interface ProductosLocatarios{
     id: number,
     producto_id: number,
     locatario_id: number,
+    plaza_id: number,
     stock: boolean,
     en_promocion: boolean,
-    // unidad: string;
-    // cantidad_unidad: number;
+    precio: number,
+    precio_rebajado: number,
+    descripcion: string,
+    sku?: string,
+    activo: boolean,
+    created_at?: Date,
+    updated_at?: Date
+}
+export interface ProductosLocatariosStore{
+    producto_id: number,
+    locatario_id: number,
+    plaza_id: number,
+    stock: boolean,
+    en_promocion: boolean,
     precio: number,
     precio_rebajado: number,
     descripcion: string,

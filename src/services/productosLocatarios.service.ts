@@ -2,7 +2,7 @@ import { ApplicationException } from '../common/exceptions/application.exception
 
 import { ProductosLocatariosCreateDto, ProductosLocatariosUpdateDto } from '../dtos/productos.dto';
 
-import { ProductosLocatarios } from './repositories/domain/productos.domain';
+import { ProductosLocatarios, ProductosLocatariosStore } from './repositories/domain/productos.domain';
 
 import { ProductosPGRepository } from './repositories/implementation/pg/productos.imp';
 import { ProductosLocatariosPGRepository } from './repositories/implementation/pg/productosLocatarios.imp';
@@ -26,7 +26,11 @@ export class ProductosLocatariosService{
         const existeProductoGeneral = await this.productoRepository.findById(entry.producto_id);
         if(!existeProductoGeneral) throw new ApplicationException("No existe el producto general con ese id");
 
-        const productoLocatario = await this.productosLocatariosRepository.store(entry);
+        const productoLocatario = await this.productosLocatariosRepository.store({
+            ...entry,
+            plaza_id:existeLocatario.plaza_id,
+            activo: true
+        } as ProductosLocatariosStore);
         if(!productoLocatario) throw new ApplicationException("Hubo un error");
         
         return productoLocatario as ProductosLocatarios;

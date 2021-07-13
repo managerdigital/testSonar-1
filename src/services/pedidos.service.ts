@@ -107,7 +107,7 @@ export class PedidoService {
         originalEntry.productos_locatarios_id = entry.productos_locatarios_id || originalEntry.productos_locatarios_id;
         originalEntry.total = entry.total || originalEntry.total;
         originalEntry.pagado = entry.pagado || originalEntry.pagado;
-        originalEntry.estado = entry.estado || originalEntry.estado;
+        originalEntry.estado = entry.estado;
         
         // Note: ESTADO = entragado(2) ENTONCES PAGADO = TRUE
         if (originalEntry.estado === PedidosEstados.entregado) {
@@ -120,11 +120,10 @@ export class PedidoService {
             if(!balance) throw new ApplicationException("Hubo un error");
             
             const productosLocatarios = originalEntry.productos_locatarios_id || entry.productos_locatarios_id;
-
-            for(const producto of productosLocatarios) {
+            for(let i = 0; i<productosLocatarios.length; i++) {
                 await this.ventasProductosLocatariosRepository.store({
                     plaza_id: entry.plaza_id || originalEntry.plaza_id,
-                    producto_locatario_id: producto
+                    producto_locatario_id: productosLocatarios[i]
                 } as VentasProductosLocatariosCreateDto);
             }
         }

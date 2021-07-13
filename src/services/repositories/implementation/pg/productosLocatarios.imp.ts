@@ -1,24 +1,24 @@
 import { pool } from '../../../../common/persistence/pg.persistence';
 import { QueryResult } from 'pg';
 
-import { ProductosLocatarios } from '../../domain/productos.domain';
+import { ProductosLocatarios, ProductosLocatariosStore } from '../../domain/productos.domain';
 
 import { ProductosLocatariosRepository } from '../../productosLocatarios.repository';
-import { ProductosLocatariosCreateDto } from '../../../../dtos/productos.dto';
 
 
 
 export class ProductosLocatariosPGRepository implements ProductosLocatariosRepository {
 
 
-    async store(entry: ProductosLocatariosCreateDto): Promise<ProductosLocatarios | null> {
+    async store(entry: ProductosLocatariosStore): Promise<ProductosLocatarios | null> {
         const now = new Date();
 
         const res = await pool.query(
-             "INSERT INTO productos_locatarios(producto_id, locatario_id, stock, en_promocion, precio, precio_rebajado, descripcion, sku, created_at, updated_at) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)  RETURNING id",
+             "INSERT INTO productos_locatarios(producto_id, locatario_id, plaza_id, stock, en_promocion, precio, precio_rebajado, descripcion, sku, created_at, updated_at) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)  RETURNING id",
              [
                 entry.producto_id,
                 entry.locatario_id, 
+                entry.plaza_id,
                 entry.stock,
                 entry.en_promocion, 
                 entry.precio,

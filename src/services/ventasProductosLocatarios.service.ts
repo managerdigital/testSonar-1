@@ -1,9 +1,8 @@
 import { ApplicationException } from '../common/exceptions/application.exception';
 
-import { VentasProductosLocatariosPGRepository } from './repositories/implementation/pg/ventasProductosLocatarios.imp';
-
 import { VentasProductosLocatarios } from './repositories/domain/ventasProductoLocatarios.domain';
 
+import { VentasProductosLocatariosPGRepository } from './repositories/implementation/pg/ventasProductosLocatarios.imp';
 
 export class VentasProductosLocatariosService{
     
@@ -15,5 +14,13 @@ export class VentasProductosLocatariosService{
         if(!productos) throw new ApplicationException("No hay productos");
         return productos;
     }
+
+    async getMasVendidos(): Promise<[]> {
+        const productos = await this.ventasProductosLocatariosRepository.getMasVendidos();
+        if(!productos) throw new ApplicationException("No hay productos");
+        return productos;
+    }
+
+
     
 }

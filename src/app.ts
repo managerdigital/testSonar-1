@@ -72,7 +72,7 @@ if(process.env.jwt_secret_key) {
 
 // Controllers
 app.use(loadControllers(
-    'controllers/*.js',
+    'controllers/*.ts',
     {cwd: __dirname}
 ));
 

@@ -9,8 +9,6 @@ import { Productos } from './repositories/domain/productos.domain';
 import { ProductoCreateDto, ProductoUpdateDto } from '../dtos/productos.dto';
 
 
-
-
 export class ProductoService{
 
 
@@ -105,7 +103,7 @@ export class ProductoService{
 
 
     async findByNameAndUnit(name: string, unit: string): Promise<Productos> {
-        const producto = await this.productoRepository.findByNameAndUnit(name, unit)
+        const producto = await this.productoRepository.findByNameAndUnit(name, unit);
         if(!producto) throw new ApplicationException("No existe ese producto");
         return producto;
     }
