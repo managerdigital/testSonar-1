@@ -79,4 +79,11 @@ export class BalanceService {
         return ganancia;
     }
 
+
+    async getGananciasTodasLasPlazas(): Promise<{plaza_id: number, total: number}[]> {
+        const ganancia = await this.balanceRepository.getGananciasTodasLasPlazas();
+        if(!ganancia) throw new ApplicationException("No existe ganacias para ese locatario");
+        return ganancia;
+    }
+
 }

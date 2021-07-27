@@ -8,5 +8,5 @@ export interface PedidoRepository {
     update(id: number, entry: PedidoUpdateDto): Promise<Pedido | null>;
     getAll(): Promise<Pedido[] | null>;
     findById(id: number): Promise<Pedido | null>;
-    pagadoYEntregado(id: number): Promise<void>;
+    // pagadoYEntregado(id: number): Promise<void>;
 }

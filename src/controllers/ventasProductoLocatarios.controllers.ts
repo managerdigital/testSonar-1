@@ -5,15 +5,15 @@ import { BaseController } from '../common/controllers/base.controller';
 
 import { VentasProductosLocatariosService } from '../services/ventasProductosLocatarios.service';
 import { ProductosLocatariosService } from '../services/productosLocatarios.service';
-import { LocatarioService } from '../services/locatarios.service';
-import { VentasProductosLocatarios } from '../services/repositories/domain/ventasProductoLocatarios.domain';
+// import { VentasProductosLocatarios } from '../services/repositories/domain/ventasProductoLocatarios.domain';
+import { ProductoService } from '../services/productos.service';
 
 @route('/ventaProductoLocatarios')
 export class VentaProductosLocatariosController extends BaseController{
    
     constructor(private readonly ventasProductosLocatariosService: VentasProductosLocatariosService,
                 private readonly productosLocatariosService: ProductosLocatariosService,
-                private readonly locatarioService: LocatarioService){
+                private readonly productoService: ProductoService){
         super();
     }
    
@@ -34,6 +34,23 @@ export class VentaProductosLocatariosController extends BaseController{
         }
     }
    
+    @route('/getCantidadProductosVendidos')
+    @GET()
+    public async getCantidadProductosVendidos(req: Request, res: Response): Promise<void>{
+
+        try {
+            const ventas = await this.ventasProductosLocatariosService.getCantidadProductosVendidos();
+
+            res.status(200).json({
+                ok: true,
+                cantidad: ventas.cantidad
+            });
+
+        } catch(error) {
+            this.handleException(error, res);
+        }
+    }
+   
     @route('/getMasVendidos')
     @GET()
     public async getMasVendidos(req: Request, res: Response): Promise<void>{
@@ -43,34 +60,27 @@ export class VentaProductosLocatariosController extends BaseController{
 
             
             const productosReturn: any = [];
-            
-            productosMasVendidos.map(async (product: VentasProductosLocatarios) => {
-                const productoLocatario = await this.productosLocatariosService.findById(product.producto_locatario_id);
-                if(productoLocatario) {
-                    const productoGeneral = await this.locatarioService.findById(productoLocatario.locatario_id);
-                    
-                    if(productoGeneral && productoGeneral.plaza_id){
-                        productosReturn.push({
-                            plaza_id: productoGeneral.plaza_id,
-                            product
-                        });
-                        // console.log('============');
-                        // console.log({
-                        //     plaza_id: productoGeneral.plaza_id,
-                        //     product
-                        // });
-                    }
-                }
-            });
-
-            console.log(productosReturn);
-       
-                
+            for(let i = 0; i < productosMasVendidos.length; i++) {
+                const productoLocatario = await this.productosLocatariosService.findById(productosMasVendidos[i].producto_locatario_id);
+              
+                const productoGeneral = await this.productoService.findById(productoLocatario.producto_id);
+        
+                productosReturn.push({
+                    locatario_id: productoLocatario.locatario_id,
+                    nombre: productoGeneral.nombre,
+                    imagen_principal: productoGeneral.imagen_principal,
+                    sku: productoGeneral.sku,
+                    producto_locatario_id: productosMasVendidos[i].producto_locatario_id,
+                    cantidad: productosMasVendidos[i].count,
+                    unidad: productoGeneral.unidad
+                });
+            }
 
             res.status(200).json({
                 ok: true,
-                productosMasVendidos
+                productos: productosReturn
             });
+            
         } catch(error) {
             this.handleException(error, res);
         }

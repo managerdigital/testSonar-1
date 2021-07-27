@@ -79,12 +79,13 @@ export class PedidoService {
     }
 
 
-    // TODO: Enviar EMAIL
     public async store(entry: PedidoCreateDto): Promise<Pedido>{
         await this.verificaIds(entry);
+        const locatario = await this.locatarioRepository.findById(entry.locatorios_id) as Locatario;
+        if(!locatario) throw new ApplicationException("No existe el locatario");
+
         const pedido = await this.pedidoRepository.store(entry);
         if(!pedido) throw new ApplicationException("Hubo un error");
-        const locatario = await this.locatarioRepository.findById(entry.locatorios_id) as Locatario;
         
         const emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
         if (emailRegex.test(locatario.email)) await this.sendEmail(locatario.email);
@@ -103,10 +104,9 @@ export class PedidoService {
 
         originalEntry.plaza_id = entry.plaza_id || originalEntry.plaza_id;
         originalEntry.locatorios_id = entry.locatorios_id || originalEntry.locatorios_id;
-        originalEntry.cliente_id = entry.cliente_id || originalEntry.id;
+        originalEntry.cliente_id = entry.cliente_id || originalEntry.cliente_id;
         originalEntry.productos_locatarios_id = entry.productos_locatarios_id || originalEntry.productos_locatarios_id;
         originalEntry.total = entry.total || originalEntry.total;
-        originalEntry.pagado = entry.pagado || originalEntry.pagado;
         originalEntry.estado = entry.estado;
         
         // Note: ESTADO = entragado(2) ENTONCES PAGADO = TRUE
@@ -121,9 +121,14 @@ export class PedidoService {
             
             const productosLocatarios = originalEntry.productos_locatarios_id || entry.productos_locatarios_id;
             for(let i = 0; i<productosLocatarios.length; i++) {
+
+                const productoLocal = await this.productosLocatariosRepository.findById(productosLocatarios[i])
+                if(!productoLocal) throw new ApplicationException("No existe un producto locatario");
+
                 await this.ventasProductosLocatariosRepository.store({
                     plaza_id: entry.plaza_id || originalEntry.plaza_id,
-                    producto_locatario_id: productosLocatarios[i]
+                    producto_locatario_id: productoLocal.id,
+                    locatario_id: productoLocal.locatario_id
                 } as VentasProductosLocatariosCreateDto);
             }
         }
@@ -134,20 +139,20 @@ export class PedidoService {
     }
 
 
-    public async pagadoYEntregado(id: number): Promise<void>{
-        const entry = await this.pedidoRepository.findById(id);
-        if(!entry) throw new ApplicationException("No existe un pedido con ese id");
+    // public async pagadoYEntregado(id: number): Promise<void>{
+    //     const entry = await this.pedidoRepository.findById(id);
+    //     if(!entry) throw new ApplicationException("No existe un pedido con ese id");
         
-        const balance = await this.balanceRepository.store({
-            total: entry.total,
-            plaza_id: entry.plaza_id,
-            locatorio_id: entry.locatorios_id,
-            cliente_id: entry.cliente_id
-        } as BalanceCreateDto);
-        if(!balance) throw new ApplicationException("Hubo un error");
+    //     const balance = await this.balanceRepository.store({
+    //         total: entry.total,
+    //         plaza_id: entry.plaza_id,
+    //         locatorio_id: entry.locatorios_id,
+    //         cliente_id: entry.cliente_id
+    //     } as BalanceCreateDto);
+    //     if(!balance) throw new ApplicationException("Hubo un error");
        
-        return await this.pedidoRepository.pagadoYEntregado(id);
-    }
+    //     return await this.pedidoRepository.pagadoYEntregado(id);
+    // }
 
 
     public async findById(id: number): Promise<Pedido>{
@@ -159,6 +164,27 @@ export class PedidoService {
 
     public async getAll(): Promise<[] | null>{
         const pedidos = await this.pedidoRepository.getAll();
+        if(!pedidos) throw new ApplicationException("No hay pedidos registrados");
+
+        const pedidosReturn = [];
+        for(let i = 0; i<pedidos.length; i++) {
+            const cliente = await this.clienteRepository.findById(pedidos[i].cliente_id);
+            if(!cliente) throw new ApplicationException("No existe uno de los clientes");
+            // if(!cliente || cliente) {}
+
+            pedidosReturn.push({
+                ...pedidos[i],    
+                cliente: {
+                    nombre: cliente.nombre,
+                    cedula: cliente.cedula
+                }
+            });
+        }
+        return pedidosReturn as [];
+    }
+
+    public async getUltimosCinco(): Promise<[] | null>{
+        const pedidos = await this.pedidoRepository.getUltimosCinco();
         if(!pedidos) throw new ApplicationException("No hay pedidos registrados");
 
         const pedidosReturn = [];

@@ -12,10 +12,11 @@ export class VentasProductosLocatariosPGRepository implements VentasProductosLoc
         const now = new Date();
         console.log(entry);
         const res = await pool.query(
-             "INSERT INTO ventas_productos_locatarios(plaza_id, producto_locatario_id, created_at, updated_at) VALUES($1, $2, $3, $4) RETURNING id",
+             "INSERT INTO ventas_productos_locatarios(plaza_id, producto_locatario_id, locatario_id, created_at, updated_at) VALUES($1, $2, $3, $4, $5) RETURNING id",
              [
                 entry.plaza_id,
                 entry.producto_locatario_id, 
+                entry.locatario_id,
                 now, 
                 now
             ]
@@ -63,10 +64,17 @@ export class VentasProductosLocatariosPGRepository implements VentasProductosLoc
         return null;
     }
 
-    async getMasVendidos(): Promise<[] | null> {
-        const response: QueryResult = await pool.query("SELECT producto_locatario_id, COUNT(producto_locatario_id) FROM ventas_productos_locatarios GROUP BY producto_locatario_id ORDER BY COUNT(producto_locatario_id) DESC");
+    async getMasVendidos(): Promise<[{producto_locatario_id: number, count: string}] | null> {
+        const response: QueryResult = await pool.query("SELECT producto_locatario_id, COUNT(producto_locatario_id) FROM ventas_productos_locatarios GROUP BY producto_locatario_id ORDER BY COUNT(producto_locatario_id) DESC LIMIT 5");
 
-        if (response.rows.length) return response.rows as [];
+        if (response.rows.length) return response.rows as [{producto_locatario_id: number, count: string}];
+        return null;
+    }
+    
+    async getCantidadProductosVendidos(): Promise<{cantidad: number} | null> {
+        const response: QueryResult = await pool.query("SELECT COUNT(producto_locatario_id) AS cantidad FROM ventas_productos_locatarios");
+
+        if (response.rows.length) return response.rows[0] as {cantidad: number};
         return null;
     }
 

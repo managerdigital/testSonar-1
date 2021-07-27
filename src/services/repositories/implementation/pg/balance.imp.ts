@@ -115,5 +115,13 @@ export class BalancePGRepository implements BalanceRepository{
         return null;
     }
 
+    async getGananciasTodasLasPlazas(): Promise<{plaza_id: number, total: number}[] | null> {
+        const response: QueryResult = await pool.query(
+            "SELECT plaza_id, SUM(total) AS total FROM balances GROUP BY plaza_id");
+
+        if (response.rows.length) return response.rows;
+        return null;
+    }
+
    
 }

@@ -168,9 +168,26 @@ export class productoLocatariosController extends BaseController{
 
             const productos = await this.productosLocatariosService.getByLocatarios(locatario_id);
 
+            const productosReturn = [];
+            for(let i = 0; i<productos.length; i++){
+                const productoGeneral = await this.productoService.findById(productos[i].producto_id);
+                
+                productosReturn.push({
+                    ...productos[i],
+                    nombre: productoGeneral.nombre,
+                    imagen_principal: productoGeneral.imagen_principal,
+                    imagenes: [
+                        productoGeneral.imagen_1,
+                        productoGeneral.imagen_2
+                    ],
+                    unidad: productoGeneral.unidad,
+                    sku: productoGeneral.sku
+                })
+            }
+
             res.status(200).json({
                 ok: true,
-                productos
+                productos: productosReturn
             });
 
         } catch(error) {

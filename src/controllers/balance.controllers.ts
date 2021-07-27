@@ -4,6 +4,7 @@ import { GET, POST, route } from "awilix-express";
 import { BaseController } from "../common/controllers/base.controller";
 
 import { BalanceService } from '../services/balance.service';
+import { PlazaService } from '../services/plazas.service';
 
 import { Balance } from '../services/repositories/domain/balance.domain';
 import { BalanceCreateDto } from '../dtos/balance.dto';
@@ -12,7 +13,8 @@ import { BalanceCreateDto } from '../dtos/balance.dto';
 @route('/balances')
 export class balanceController extends BaseController{
 
-    constructor(private readonly balanceService: BalanceService){
+    constructor(private readonly balanceService: BalanceService,
+        private readonly plazaService: PlazaService){
         super();
     }
 
@@ -118,6 +120,33 @@ export class balanceController extends BaseController{
         }
     }
 
+
+
+    @route('/getGananciasTodasLasPlazas')
+    @GET()
+    public async getGananciasTodasLasPlazas(req: Request, res: Response): Promise<void>{
+        try{
+
+            const respuesta = await this.balanceService.getGananciasTodasLasPlazas();
+    
+            const respuestaReturn = [];
+            for(let i = 0; i< respuesta.length; i++) {
+                const plaza = await this.plazaService.findById(respuesta[i].plaza_id);
+                respuestaReturn.push({
+                    total: respuesta[i].total,
+                    nombre_plaza: plaza.nombre
+                })
+            }
+
+            res.status(200).json({
+                ok: true,
+                ganancias: respuestaReturn
+            }); 
+
+        } catch(error) {
+            this.handleException(error, res); 
+        }
+    }
 
 
     @route('/getGananciasTotales')

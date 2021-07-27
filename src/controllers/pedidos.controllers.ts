@@ -103,28 +103,28 @@ export class pedidoController extends BaseController{
     }
 
 
-    @route('/pagadoYEntregado/:id')
-    @PUT()
-    public async delete(req: Request, res: Response): Promise<void>{
-        const user = req.user as {id: number, rol: string};
-        const id = parseInt(req.params.id);
+    // @route('/pagadoYEntregado/:id')
+    // @PUT()
+    // public async delete(req: Request, res: Response): Promise<void>{
+    //     const user = req.user as {id: number, rol: string};
+    //     const id = parseInt(req.params.id);
 
-        const rolesPermitidos = ['SUPER_ADMIN', 'ADMIN_LOCATARIO'];
+    //     const rolesPermitidos = ['SUPER_ADMIN', 'ADMIN_LOCATARIO'];
         
-        if(rolesPermitidos.includes(user.rol)) {
-            try {
-                await this.pedidoService.pagadoYEntregado(id);
+    //     if(rolesPermitidos.includes(user.rol)) {
+    //         try {
+    //             await this.pedidoService.pagadoYEntregado(id);
                 
-                res.status(200).json({
-                    ok: true,
-                    msg: "Pedido borrado con exito!"
-                });
+    //             res.status(200).json({
+    //                 ok: true,
+    //                 msg: "Pedido borrado con exito!"
+    //             });
     
-            } catch(error){
-                this.handleException(error, res);
-            }
-        }
-    }
+    //         } catch(error){
+    //             this.handleException(error, res);
+    //         }
+    //     }
+    // }
 
 
     @route('/getAll')
@@ -132,6 +132,22 @@ export class pedidoController extends BaseController{
     public async getAll(req: Request, res: Response): Promise<void>{
         try {
             const pedidos = await this.pedidoService.getAll();
+
+            res.status(200).json({
+                ok: true,
+                pedidos
+            });
+        } catch(error) {
+            this.handleException(error, res);
+        }
+    }
+
+
+    @route('/getUltimosCinco')
+    @GET()
+    public async getUltimosCinco(req: Request, res: Response): Promise<void>{
+        try {
+            const pedidos = await this.pedidoService.getUltimosCinco();
 
             res.status(200).json({
                 ok: true,

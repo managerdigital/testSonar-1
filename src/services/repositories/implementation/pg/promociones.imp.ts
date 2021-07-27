@@ -41,11 +41,12 @@ export class PromocionesPGRepository implements PromocionesRepository {
         const now = new Date();
 
         await pool.query(
-            "UPDATE promociones SET producto_id = $1, plazas_id = $2, categorias_id = $3, imagen = $4, updated_at = $5 WHERE id = $6",
+            "UPDATE promociones SET producto_id = $1, plazas_id = $2, categorias_id = $3, imagen = $4, activo = $5, updated_at = $6 WHERE id = $7",
             [   entry.producto_id, 
                 entry.plazas_id,
                 entry.categorias_id, 
                 entry.imagen,
+                entry.activo,
                 now, 
                 entry.id 
             ]

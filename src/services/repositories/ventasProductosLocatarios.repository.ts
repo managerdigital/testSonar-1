@@ -9,5 +9,5 @@ export interface VentasProductosLocatariosRepository {
     findByPlazaId(plazaiId: number): Promise<VentasProductosLocatarios | null>;
     findByProductoLocatarioId(productoLocatarioId: number): Promise<VentasProductosLocatarios | null>;
     getAll(): Promise<VentasProductosLocatarios[] | null>;
-    getMasVendidos(): Promise<[] | null>;
+    // getMasVendidos(): Promise<[] | null>;
 }

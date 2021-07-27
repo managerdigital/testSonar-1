@@ -7,7 +7,6 @@ export interface Pedido {
     cliente_id: number;
     locatorios_id: number;
     productos_locatarios_id: number[];
-    pagado: boolean;
     estado: PedidosEstados;
     total: number;
     created_at: Date | null;

@@ -15,7 +15,13 @@ export class VentasProductosLocatariosService{
         return productos;
     }
 
-    async getMasVendidos(): Promise<[]> {
+    async getCantidadProductosVendidos(): Promise<{cantidad: number}> {
+        const productos = await this.ventasProductosLocatariosRepository.getCantidadProductosVendidos();
+        if(!productos) throw new ApplicationException("No hay productos");
+        return productos;
+    }
+
+    async getMasVendidos(): Promise<[{producto_locatario_id: number, count: string}]> {
         const productos = await this.ventasProductosLocatariosRepository.getMasVendidos();
         if(!productos) throw new ApplicationException("No hay productos");
         return productos;
