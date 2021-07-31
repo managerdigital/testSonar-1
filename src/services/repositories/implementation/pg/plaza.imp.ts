@@ -187,6 +187,18 @@ export class PlazaPGRepository implements PlazaRepository{
         return null;
     }
     
+
+    async findByPlazaIdSiCategoriaExiste(plazaId: number, categoriaId: number): Promise<Plaza | null> {
+        const response: QueryResult = await pool.query(
+            "SELECT * FROM plazas WHERE $1 = ANY (categorias_id) AND id = $2",
+            [
+                categoriaId,
+                plazaId
+            ]
+            );
+        if (!response.rows.length) return null
+        return response.rows[0] as Plaza;
+    }
  
 
 }

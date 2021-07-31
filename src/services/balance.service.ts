@@ -72,7 +72,6 @@ export class BalanceService {
     }
 
 
-
     async getGananciasTotales(): Promise<{sum: number}> {
         const ganancia = await this.balanceRepository.getGananciasTotales();
         if(!ganancia) throw new ApplicationException("No existe ganacias para ese locatario");

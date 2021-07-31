@@ -104,17 +104,18 @@ export class LocatarioService{
             const locatario = await this.locatarioRepository.store({
                admin_id: entry.admin_id,
                plaza_id: entry.plaza_id,
-               categorias_id: entry.categorias_id || null,
-               productos_locatarios_id: entry.productos_locatarios_id || null,
-               nombre_local: entry.nombre_local || null,
-               numero_local: entry.numero_local || null,   
-               nombre: entry.nombre || null,
-               apellido: entry.apellido || null,
-               cedula: entry.cedula || null,
-               telefono: entry.telefonos || null,
-               horarios: entry.horarios || null,
-               img: entry.img || null,
-               logo: entry.logo || null
+               categorias_id: entry.categorias_id,
+               productos_locatarios_id: entry.productos_locatarios_id,
+               nombre_local: entry.nombre_local,
+               numero_local: entry.numero_local,  
+               email: entry.email, 
+               nombre: entry.nombre,
+               apellido: entry.apellido,
+               cedula: entry.cedula,
+               telefonos: entry.telefonos,
+               horarios: entry.horarios,
+               img: entry.img,
+               logo: entry.logo
             } as LocatarioCreateDto);
             
             if(!locatario) throw new ApplicationException("Hubo un error");
@@ -185,6 +186,29 @@ export class LocatarioService{
         const locatario = await this.locatarioRepository.findByCedula(cedula) as Locatario[];
         if(!locatario) throw new ApplicationException("No existe ese locatario");
         return locatario;
+    }
+
+    async findByLocatarioIdSiCategoriaExiste(locatarioId: number, categoriaId: number): Promise<void> {
+        const locatario = await this.locatarioRepository.findById(locatarioId);
+        if(!locatario) throw new ApplicationException('No existe ese locatario');
+
+        const categoria = await this.categoriaRepository.findById(categoriaId);
+        if(!categoria) throw new ApplicationException('No existe esa categoria');
+
+        const existeCategoriaEnLocatario = await this.locatarioRepository.findByLocatarioIdSiCategoriaExiste(locatarioId, categoriaId);
+        if(!existeCategoriaEnLocatario) {
+            locatario.categorias_id.push(categoriaId);
+            await this.locatarioRepository.update(locatarioId, locatario as LocatarioUpdateDto);
+        }
+        const plazaId = locatario.plaza_id;
+        const plaza = await this.plazaRepository.findById(plazaId);
+        if(!plaza) throw new ApplicationException('Hubo un error con la plaza de ese locatario');
+        
+        const existeCategoriaEnPlaza = await this.plazaRepository.findByPlazaIdSiCategoriaExiste(plazaId, categoriaId);
+        if(!existeCategoriaEnPlaza) {
+            plaza.categorias_id.push(categoriaId);
+            await this.plazaRepository.update(plazaId, plaza);
+        }
     }
 
 

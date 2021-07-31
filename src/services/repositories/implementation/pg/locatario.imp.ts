@@ -134,6 +134,18 @@ export class LocatarioPGRepository implements LocatarioRepository {
             return null;
     }
 
+    async findByLocatarioIdSiCategoriaExiste(locatarioId: number, categoriaId: number): Promise<Locatario | null> {
+        const response: QueryResult = await pool.query(
+            "SELECT * FROM locatarios WHERE $1 = ANY (categorias_id) AND id = $2",
+            [
+                categoriaId,
+                locatarioId
+            ]
+            );
+        if (!response.rows.length) return null
+        return response.rows[0] as Locatario;
+    }
+
 
     // SELECT * FROM locatarios WHERE '(408)-783-5731' = ANY (numero_local);
     async findPorNumeroLocalPlazaId(noLocal: number, plazaId: number): Promise<Locatario | null> {

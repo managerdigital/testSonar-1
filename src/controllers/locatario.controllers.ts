@@ -247,6 +247,27 @@ export class locatarioController extends BaseController{
         }
     }
 
+    
+    @route('/findByLocatarioIdSiCategoriaExiste/:locatarioId/:categoriaId')
+    @GET()
+    public async findByLocatarioIdSiCategoriaExiste(req: Request, res: Response): Promise<void>{
+
+        try{
+            const locatarioId = parseInt(req.params.locatarioId);
+            const categoriaId = parseInt(req.params.categoriaId);
+
+            await this.locatarioService.findByLocatarioIdSiCategoriaExiste(locatarioId, categoriaId);
+            
+            res.status(200).json({
+                ok: true,
+                msg: 'Ok'
+            });
+
+        } catch(error) {
+            this.handleException(error, res);
+        }
+    }
+
 
 
 
