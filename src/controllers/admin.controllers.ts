@@ -58,7 +58,7 @@ export class adminController extends BaseController{
     public async update(req: Request, res: Response): Promise<void>{
         const user = req.user as {id: number, rol: string};
 
-        if(user.rol === 'SUPER_ADMIN', user.rol === 'ADMIN_LOCATARIO') {
+        if(user.rol === 'SUPER_ADMIN' || user.rol === 'ADMIN_LOCATARIO') {
             
             const id = parseInt(req.params.id);
             
